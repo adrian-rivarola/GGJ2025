@@ -11,8 +11,11 @@ const config: Types.Core.GameConfig = {
         default: 'arcade',
         arcade: {
             // debug: true,
+            tileBias: 4,
         }
     },
+    pixelArt: true,
+    zoom: 4,
     scale: {
         mode: Phaser.Scale.RESIZE,
     },

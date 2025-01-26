@@ -36,7 +36,7 @@ export default class Player extends GameObjects.Sprite {
         // Reduces speed per second.
         this.body.useDamping = true;
         this.body.setDrag(0.01, 0.01);
-        this.body.setMaxSpeed(150);
+        this.body.setMaxSpeed(128);
 
         this.body.setSize(16, 16);
     }
@@ -45,11 +45,11 @@ export default class Player extends GameObjects.Sprite {
         this.cursorKeys = this.scene.input.keyboard!.createCursorKeys();
 
         this.cursorKeys.space.onDown = () => {
-            this.body.setMaxSpeed(300);
+            this.body.setMaxSpeed(256);
             this.body.velocity.scale(4);
         }
         this.cursorKeys.space.onUp = () => {
-            this.body.setMaxSpeed(150);
+            this.body.setMaxSpeed(128);
         }
     }
 
@@ -67,7 +67,7 @@ export default class Player extends GameObjects.Sprite {
     preUpdate(time: number, delta: number): void {
         super.preUpdate(time, delta);
 
-        const acceleration = 400
+        const acceleration = 320
 
         this.body.setAcceleration(0, 0);
 

@@ -17,7 +17,6 @@ export class Game extends Scene {
         this.load.spritesheet('fish', 'assets/fish.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('powerup', 'assets/powerup.png', { frameWidth: 32, frameHeight: 32 });
 
-        this.load.image("water-tiles", "assets/Water.png");
         this.load.image("grass-tiles", "assets/grass.png");
         this.load.image("cave-tiles", "assets/cave.png");
         this.load.tilemapTiledJSON("map", "assets/map1.json");
@@ -122,11 +121,6 @@ export class Game extends Scene {
                 });
             }
         });
-
-
-        this.cameras.main
-            .setZoom(3.5)
-            .startFollow(this.player, false, 1, 1, -75, 0);
     }
 
     create() {
@@ -134,6 +128,10 @@ export class Game extends Scene {
         this.createFish();
         this.createPowerups();
         this.createPlayer();
+
+        this.cameras.main
+            .setZoom(4)
+            .startFollow(this.player, false, 0.15, 0.15, -64, 0)
     }
 }
 
