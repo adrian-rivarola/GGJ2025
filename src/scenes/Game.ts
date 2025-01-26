@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import Player from '../player';
 import Fish from '../fish';
 import PowerUp from '../powerup';
+import { EVENTS_NAME } from '../consts';
 
 export class Game extends Scene {
     map: Phaser.Tilemaps.Tilemap;

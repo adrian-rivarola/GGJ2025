@@ -10,6 +10,8 @@ export class Loading extends Scene {
     this.load.spritesheet('fish', 'assets/fish.png', { frameWidth: 48, frameHeight: 48 });
     this.load.spritesheet('powerup', 'assets/powerup.png', { frameWidth: 32, frameHeight: 32 });
     this.load.image('powerup-frame', 'assets/powerup-frame.png');
+    this.load.image('bubble', 'assets/bubble.png');
+
     this.load.spritesheet('tiles_spr', 'assets/dungeon.png', { frameWidth: 16, frameHeight: 16 });
     this.load.image("grass-tiles", "assets/grass.png");
     this.load.image("cave-tiles", "assets/cave.png");

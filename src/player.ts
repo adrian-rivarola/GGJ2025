@@ -3,12 +3,15 @@ import { EVENTS_NAME, GameStatus } from './consts';
 
 export default class Player extends GameObjects.Sprite {
     declare body: Physics.Arcade.Body;
+    shield: GameObjects.Image;
     cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys
     staminaRestoreEvent: Phaser.Time.TimerEvent;
+    breathing: Phaser.Time.TimerEvent;
 
     MAX_STAMINA = 100;
 
     hearts = 3
+    oxygen = 5
     takingDamage = false;
     lastCollision = -1;
     stamina = this.MAX_STAMINA;
@@ -16,16 +19,29 @@ export default class Player extends GameObjects.Sprite {
 
     maxSpeed = 128;
     maxDivingSpeed = 256;
-    hasShield = true
+    hasShield = false;
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'character', 0);
         scene.add.existing(this);
-        // this.setScale(1.5);
 
         this.setupAnimations();
         this.setupPhysics();
         this.setupControls();
+
+        this.scene.game?.events?.on(EVENTS_NAME.uiSceneCreated, () => {
+            this.scene.game.events.emit(EVENTS_NAME.uiChange, this);
+        });
+        this.breathing = this.scene.time.addEvent({
+            delay: 15_000,
+            callback: () => {
+                this.checkOxygen();
+            },
+            callbackScope: this,
+            loop: true,
+        });
+
+        this.shield = this.scene.add.image(this.x, this.y, 'bubble').setScale(1.5).setOrigin(0.5).setVisible(false);
     }
 
     setupAnimations() {
@@ -59,6 +75,7 @@ export default class Player extends GameObjects.Sprite {
         this.body.setMaxSpeed(128);
         this.body.setSize(14, 14);
     }
+
     setupControls() {
         this.cursorKeys = this.scene.input.keyboard!.createCursorKeys();
 
@@ -70,7 +87,7 @@ export default class Player extends GameObjects.Sprite {
                         this.body.velocity.scale(4);
 
                         this.stamina -= 30 * this.scene.game.loop.delta / 1000;
-                        this.scene.game.events.emit(EVENTS_NAME.staminaChange, this.stamina);
+                        this.scene.game.events.emit(EVENTS_NAME.uiChange, this);
                         if (this.stamina <= 0) {
                             this.stamina = 0;
                             this.body.setMaxSpeed(128);
@@ -101,7 +118,7 @@ export default class Player extends GameObjects.Sprite {
             delay: 50,
             callback: () => {
                 this.stamina += staminaRegenRate;
-                this.scene.game.events.emit(EVENTS_NAME.staminaChange, this.stamina);
+                this.scene.game.events.emit(EVENTS_NAME.uiChange, this);
                 if (this.stamina >= this.MAX_STAMINA) {
                     this.stamina = this.MAX_STAMINA;
                     this.resetStaminaTimer();
@@ -119,7 +136,7 @@ export default class Player extends GameObjects.Sprite {
         this.restoringStamina = false;
     }
 
-    takeDamage() {
+    takeDamage(amount: number = 1) {
         if (this.hasShield) {
             this.takingDamage = true
             const text = this.scene.add.text(this.x, this.y, 'Blocked!', { fontSize: 12 }).setOrigin(0.5).setSize(12, 12).setScale(0.5);
@@ -128,6 +145,7 @@ export default class Player extends GameObjects.Sprite {
             });
 
             this.hasShield = false;
+            this.shield.setVisible(false);
             this.scene.time.delayedCall(1000, () => {
                 this.takingDamage = false;
             });
@@ -135,10 +153,10 @@ export default class Player extends GameObjects.Sprite {
             return;
         }
 
-        this.hearts -= 1
+        this.hearts -= amount
         this.takingDamage = true
 
-        this.scene?.game.events.emit(EVENTS_NAME.hpChange, this.hearts);
+        this.scene.game.events.emit(EVENTS_NAME.uiChange, this);
         this.scene.sound.add('hitHurt').play();
 
         this.tint = 0xFF0000;
@@ -166,6 +184,20 @@ export default class Player extends GameObjects.Sprite {
         });
     }
 
+    checkOxygen() {
+        if (this.hasShield) {
+            return;
+        }
+
+        this.oxygen--;
+        console.log(this.oxygen);
+
+        this.scene.game.events.emit(EVENTS_NAME.uiChange, this);
+        if (this.oxygen === 0) {
+            this.takeDamage(this.hearts);
+        }
+    }
+
     preUpdate(time: number, delta: number): void {
         super.preUpdate(time, delta);
         this.body.setAcceleration(0, 0);
@@ -188,6 +220,10 @@ export default class Player extends GameObjects.Sprite {
         }
         if (this.cursorKeys.down.isDown) {
             this.body.setAccelerationY(acceleration)
+        }
+
+        if (this.hasShield) {
+            this.shield.setPosition(this.x, this.y)
         }
 
         if (this.body.acceleration.x !== 0 || this.body.acceleration.y !== 0) {

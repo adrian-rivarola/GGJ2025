@@ -1,7 +1,7 @@
 export enum EVENTS_NAME {
   gameEnd = 'game-end',
-  hpChange = 'hp-change',
-  staminaChange = 'stamina-change',
+  uiSceneCreated = 'ui-scene-created',
+  uiChange = 'ui-change',
 }
 
 export enum GameStatus {

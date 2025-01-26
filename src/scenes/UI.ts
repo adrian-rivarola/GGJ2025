@@ -2,6 +2,7 @@ import { GameObjects, Scene } from 'phaser';
 
 import { EVENTS_NAME, GameStatus } from '../consts';
 import { Text } from '../classes/text';
+import Player from '../player';
 
 enum HeartFrames {
   FULL_HEART = 530,
@@ -13,7 +14,10 @@ export class UI extends Scene {
   private gameEndPhrase!: Text;
   private hearts: GameObjects.Sprite[] = [];
   private staminaBar: GameObjects.Sprite;
+  private bubbles: GameObjects.Sprite[] = [];
+
   maxHearts = 3;
+  maxBubbles = 5;
   maxStamina = 100;
 
   private gameEndHandler: (status: GameStatus) => void;
@@ -45,12 +49,7 @@ export class UI extends Scene {
       );
 
       this.input.on('pointerdown', () => {
-        this.game.events.off(EVENTS_NAME.gameEnd, this.gameEndHandler);
-        this.scene.get('level-1-scene').scene.restart();
-        this.scene.restart();
-
-        this.maxHearts = 3;
-        this.createHearts();
+        window.location.reload()
       });
     };
   }
@@ -58,45 +57,55 @@ export class UI extends Scene {
   create(): void {
     this.initListeners();
 
-    this.createHearts();
     this.createStaminaBar();
-    this.updateLife(this.maxHearts);
+
+    this.game?.events.emit(EVENTS_NAME.uiSceneCreated);
   }
 
   createHearts() {
+    if (this.hearts.length === this.maxHearts) {
+      return;
+    }
+
     this.hearts.map((el) => el.destroy());
     this.hearts = [];
 
     for (let i = 0; i < this.maxHearts; i++) {
-      this.hearts.push(this.add.sprite(20 + 32 * (i + 1), 50, 'tiles_spr').setScale(2));
+      this.hearts.push(this.add.sprite(20 + 32 * (i + 1), 50, 'tiles_spr', HeartFrames.FULL_HEART).setScale(2));
     }
   }
 
-  updateLife(life: number) {
-    let maxH = this.maxHearts;
-    for (let i = 0; i < life; i++) {
-      this.hearts[i].setFrame(HeartFrames.FULL_HEART);
-      maxH = i;
+  createBubbles() {
+    if (this.bubbles.length === this.maxBubbles) {
+      return;
     }
-    for (let i = maxH + 1; i < this.hearts.length; i++) {
-      this.hearts[i].setFrame(HeartFrames.EMPTY_HEART);
+
+    this.bubbles.map((el) => el.destroy());
+    this.bubbles = [];
+
+    for (let i = 0; i < this.maxBubbles; i++) {
+      this.bubbles.push(this.add.sprite(20 + 32 * (i + 1), 100, 'bubble').setScale(1));
     }
   }
 
   createStaminaBar() {
-    this.staminaBar = this.add.sprite(40, 80, "staminabar");
+    this.staminaBar = this.add.sprite(40, 140, "staminabar");
     this.staminaBar.setScale(0.5);
     this.staminaBar.displayWidth = this.maxStamina * 2;
     this.staminaBar.setOrigin(0, 0);
   }
 
-  updateStamina(stamina: number) {
-    this.staminaBar.displayWidth = stamina * 2;
+
+  updateUI(player: Player) {
+    this.maxHearts = player.hearts;
+    this.maxBubbles = player.oxygen;
+    this.createHearts();
+    this.createBubbles();
+    this.staminaBar.displayWidth = player.stamina * 2;
   }
 
   private initListeners(): void {
-    this.game.events.on(EVENTS_NAME.hpChange, this.updateLife, this);
+    this.game.events.on(EVENTS_NAME.uiChange, this.updateUI, this);
     this.game.events.once(EVENTS_NAME.gameEnd, this.gameEndHandler, this);
-    this.game.events.on(EVENTS_NAME.staminaChange, this.updateStamina, this);
   }
 }

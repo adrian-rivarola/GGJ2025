@@ -1,5 +1,6 @@
-import { GameObjects, Scene, Math as M } from "phaser";
+import { GameObjects, Scene } from "phaser";
 import Player from "./player";
+import { EVENTS_NAME } from "./consts";
 
 // Map effect names to frame index in spritesheet
 export const EFFECTS = [
@@ -85,8 +86,9 @@ export default class PowerUp extends GameObjects.Sprite {
 
     applyEffect(player: Player) {
         const effectMap: Record<string, Function> = {
-            // TODO: 
-            'oxygen': () => { },
+            'oxygen': () => {
+                player.oxygen++;
+            },
             'random': () => {
                 this.randomizing = true;
                 this.play('random');
@@ -94,7 +96,7 @@ export default class PowerUp extends GameObjects.Sprite {
                 this.scene.time.delayedCall(2000, () => {
                     this.anims.stop();
 
-                    const wheelOfFortune = Math.random() < 0.9;
+                    const wheelOfFortune = Math.random() < 0.8;
                     if (wheelOfFortune) {
                         const newEffectIdx = Math.floor(Math.random() * EFFECTS.length);
                         this.effect = EFFECTS[newEffectIdx];
@@ -111,10 +113,15 @@ export default class PowerUp extends GameObjects.Sprite {
                     this.setFrame(EFFECTS.indexOf('random'));
 
                     const text = this.scene.add.text(this.x, this.y, 'Nope!', { fontSize: 12 }).setOrigin(0.5).setSize(12, 12).setScale(0.5);
-                    this.scene.time.delayedCall(500, () => {
-                        text.destroy();
+                    text.angle = -10;
+                    this.scene.tweens.add({
+                        targets: text,
+                        angle: 10,
+                        duration: 100,
+                        yoyo: true,
+                        loop: 1,
+                        onComplete: () => text.destroy(),
                     });
-
                 });
             },
             'health': () => {
@@ -125,6 +132,8 @@ export default class PowerUp extends GameObjects.Sprite {
             },
             'shield': () => {
                 player.hasShield = true;
+                player.shield.setVisible(true);
+                player.shield.setPosition(player.x, player.y);
             },
             'speed': () => {
                 player.maxSpeed += 16;
@@ -143,10 +152,10 @@ export default class PowerUp extends GameObjects.Sprite {
                     player.body.setGravityY(0);
                 });
             },
-        }
+        };
 
         effectMap[this.effect]();
-
+        this.scene.game.events.emit(EVENTS_NAME.uiChange, player);
     }
 
     protected preUpdate(time: number, delta: number): void {

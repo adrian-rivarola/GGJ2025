@@ -22,7 +22,6 @@ const config: Types.Core.GameConfig = {
         mode: Phaser.Scale.RESIZE,
     },
     scene: [
-        // TODO: Add UI
         Loading,
         GameScene,
         UI,
