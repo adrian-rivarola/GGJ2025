@@ -1,12 +1,13 @@
-import { GameObjects, Scene } from 'phaser';
+import { Scene } from 'phaser';
 import Player from '../player';
 import Fish from '../fish';
+import PowerUp from '../powerup';
 
 export class Game extends Scene {
     map: Phaser.Tilemaps.Tilemap;
     player: Player;
     fish: Fish[];
-    powerups: Phaser.GameObjects.Sprite[];
+    powerups: PowerUp[];
 
     constructor() {
         super('level-1-scene');
@@ -49,14 +50,9 @@ export class Game extends Scene {
 
     createPowerups() {
         const powerupObjects = this.map.getObjectLayer('powerup-positions')?.objects ?? [];
-        this.powerups = powerupObjects.map(e => {
-            // TODO: define powerup effect
-            const idx = Math.round(Math.random() * 20);
-            const powerup = this.add.sprite(e.x!, e.y! - 16, 'powerup', idx)
-            this.physics.world.enable(powerup);
+        this.powerups = powerupObjects.map(e => new PowerUp(this, e.x!, e.y! - 16, 'random'));
 
-            return powerup;
-        });
+        this.physics.world.enable(this.powerups);
         this.tweens.add({
             targets: this.powerups,
             y: '+=8',
@@ -84,23 +80,8 @@ export class Game extends Scene {
         });
 
         this.physics.add.overlap(this.player, this.powerups, (_, powerup) => {
-            if (powerup instanceof GameObjects.Sprite) {
-                if (!powerup.active) {
-                    return
-                }
-                //TODO: Add effect to player
-
-                powerup.setActive(false);
-                powerup.removeFromDisplayList();
-                powerup.removeFromUpdateList();
-
-                // Reactivate powerup in 30 seconds
-                this.time.delayedCall(30_000, () => {
-                    // TODO: Change powerup type?
-                    powerup.setActive(true);
-                    powerup.addToDisplayList();
-                    powerup.addToUpdateList();
-                });
+            if (powerup instanceof PowerUp) {
+                powerup.use(this.player);
             }
         });
     }
