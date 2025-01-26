@@ -3,10 +3,15 @@ import { Scene, GameObjects, Physics } from 'phaser';
 export default class Player extends GameObjects.Sprite {
     declare body: Physics.Arcade.Body;
     cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys
+    staminaRestoreEvent : Phaser.Time.TimerEvent;
+
+    MAX_STAMINA = 100;
 
     hearts = 3
     takingDamage = false;
     lastCollision = -1;
+    stamina = this.MAX_STAMINA;
+    restoringStamina = false;
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'character', 0);
@@ -52,17 +57,61 @@ export default class Player extends GameObjects.Sprite {
 
     setupControls() {
         this.cursorKeys = this.scene.input.keyboard!.createCursorKeys();
-
-        this.cursorKeys.space.onDown = () => {
+    
+        this.scene.events.on('update', () => {
             if (this.hearts > 0) {
-                this.body.setMaxSpeed(256);
-                this.body.velocity.scale(4);
+                if (this.cursorKeys.space.isDown) {
+                    if (this.stamina > 0) {
+                        this.body.setMaxSpeed(256);
+                        this.body.velocity.scale(4);
+        
+                        this.stamina -= 30 * this.scene.game.loop.delta / 1000;
+                        if (this.stamina <= 0) {
+                            this.stamina = 0;
+                            this.body.setMaxSpeed(128);
+                        }
+                        this.resetStaminaTimer();
+                    }
+                } else {
+                    this.body.setMaxSpeed(128);
+        
+                    if (this.stamina != this.MAX_STAMINA && !this.restoringStamina) {
+                        this.startStaminaTimer();
+                    }
+                }
             }
-        }
-        this.cursorKeys.space.onUp = () => {
-            this.body.setMaxSpeed(128);
-        }
+        });
     }
+    
+    startStaminaTimer() {
+        this.restoringStamina = true;
+        this.staminaRestoreEvent = this.scene.time.delayedCall(3000, () => {
+            this.restoreStamina();
+        });
+    }
+    
+    restoreStamina() {
+        const staminaRegenRate = this.MAX_STAMINA / 100; 
+        this.staminaRestoreEvent = this.scene.time.addEvent({
+            delay: 50,
+            callback: () => {
+                this.stamina += staminaRegenRate;
+                if (this.stamina >= this.MAX_STAMINA) {
+                    this.stamina = this.MAX_STAMINA;
+                    this.resetStaminaTimer();
+                }
+            },
+            callbackScope: this,
+            loop: true,
+        });
+    }
+    
+    resetStaminaTimer() {
+        if (this.staminaRestoreEvent) {
+            this.staminaRestoreEvent.remove();
+        }
+        this.restoringStamina = false;
+    }    
 
     takeDamage() {
         this.hearts -= 1
