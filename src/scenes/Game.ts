@@ -2,11 +2,12 @@ import { Scene } from 'phaser';
 import Player from '../player';
 import Fish from '../fish';
 import PowerUp from '../powerup';
-import { EVENTS_NAME } from '../consts';
+import { EVENTS_NAME, GameStatus } from '../consts';
 
 export class Game extends Scene {
     map: Phaser.Tilemaps.Tilemap;
     player: Player;
+    win: Phaser.Physics.Arcade.Body;
     fish: Fish[];
     powerups: PowerUp[];
     bgMusic: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
@@ -69,7 +70,10 @@ export class Game extends Scene {
 
     createPlayer() {
         const [playerOpts,] = this.map.filterObjects('player-position', (e) => e.name === 'player') ?? [];
+        const [winOpts,] = this.map.filterObjects('player-position', (e) => e.name === 'Win') ?? [];
         this.player = new Player(this, playerOpts?.x ?? 150, playerOpts?.y ?? 500);
+        this.win = new Phaser.Physics.Arcade.Body(this.physics.world);
+        this.win.position = new Phaser.Math.Vector2(winOpts.x, winOpts.y);
 
         this.physics.add.collider(this.player, this.map.getLayer('caves')!.tilemapLayer, () => {
             this.player.lastCollision = this.game.getTime();
@@ -88,6 +92,10 @@ export class Game extends Scene {
             if (powerup instanceof PowerUp) {
                 powerup.use(this.player);
             }
+        });
+
+        this.physics.add.overlap(this.player, this.win, (_) => {
+            this.game.events.emit(EVENTS_NAME.gameEnd, GameStatus.WIN)
         });
     }
 
