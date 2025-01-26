@@ -6,7 +6,7 @@ export default class Player extends GameObjects.Sprite {
 
     hearts = 3
     takingDamage = false;
-    lastCollission = -1;
+    lastCollision = -1;
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'character', 0);
@@ -47,8 +47,7 @@ export default class Player extends GameObjects.Sprite {
         this.body.useDamping = true;
         this.body.setDrag(0.01, 0.01);
         this.body.setMaxSpeed(128);
-
-        this.body.setSize(16, 16);
+        this.body.setSize(14, 14);
     }
 
     setupControls() {
@@ -120,7 +119,7 @@ export default class Player extends GameObjects.Sprite {
 
         if (this.body.acceleration.x !== 0 || this.body.acceleration.y !== 0) {
             // Check if there was a collision in the last 100 ms
-            const isColliding = time - this.lastCollission < 100;
+            const isColliding = time - this.lastCollision < 100;
             const dir = isColliding ? this.body.acceleration : this.body.velocity;
 
             this.setFlipY(dir.x < 0);

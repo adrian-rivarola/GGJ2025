@@ -81,7 +81,7 @@ export class Game extends Scene {
         this.player = new Player(this, playerOpts?.x ?? 150, playerOpts?.y ?? 500);
 
         this.physics.add.collider(this.player, this.map.getLayer('caves')!.tilemapLayer, () => {
-            this.player.lastCollission = this.game.getTime()
+            this.player.lastCollision = this.game.getTime();
         });
 
         this.physics.add.overlap(this.player, this.fish, (_, fish) => {

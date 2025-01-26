@@ -55,7 +55,7 @@ export default class Fish extends GameObjects.Sprite {
         this.body.setDrag(0.01, 0.01);
         this.body.setMaxSpeed(150);
 
-        this.body.setSize(20, 20);
+        this.body.setSize(30, 30);
     }
 
     setupPatrol(fishOpts?: FishOpts) {
