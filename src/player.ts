@@ -20,6 +20,7 @@ export default class Player extends GameObjects.Sprite {
     maxSpeed = 128;
     maxDivingSpeed = 256;
     hasShield = false;
+    isDiving = false;
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'character', 0);
@@ -79,30 +80,21 @@ export default class Player extends GameObjects.Sprite {
     setupControls() {
         this.cursorKeys = this.scene.input.keyboard!.createCursorKeys();
 
-        this.scene.events.on('update', () => {
-            if (this.hearts > 0) {
-                if (this.cursorKeys.space.isDown) {
-                    if (this.stamina > 0) {
-                        this.body.setMaxSpeed(256);
-                        this.body.velocity.scale(4);
-
-                        this.stamina -= 30 * this.scene.game.loop.delta / 1000;
-                        this.scene.game.events.emit(EVENTS_NAME.uiChange, this);
-                        if (this.stamina <= 0) {
-                            this.stamina = 0;
-                            this.body.setMaxSpeed(128);
-                        }
-                        this.resetStaminaTimer();
-                    }
-                } else {
-                    this.body.setMaxSpeed(128);
-
-                    if (this.stamina != this.MAX_STAMINA && !this.restoringStamina) {
-                        this.startStaminaTimer();
-                    }
-                }
+        this.cursorKeys.space.onDown = () => {
+            if (this.hearts <= 0 || this.stamina <= 0 || (this.body.acceleration.x === 0 && this.body.acceleration.y == 0)) {
+                return;
             }
-        });
+
+            this.isDiving = true;
+            this.body.setMaxSpeed(this.maxDivingSpeed);
+            this.body.velocity.scale(3);
+
+        };
+
+        this.cursorKeys.space.onUp = () => {
+            this.isDiving = false;
+            this.body.setMaxSpeed(this.maxSpeed);
+        }
     }
 
     startStaminaTimer() {
@@ -234,6 +226,20 @@ export default class Player extends GameObjects.Sprite {
             this.setFlipY(dir.x < 0);
             // TODO: Interpolate rotation?
             this.rotation = dir.angle();
+        }
+
+        if (this.isDiving) {
+            this.stamina -= 30 * this.scene.game.loop.delta / 1000;
+            this.scene.game.events.emit(EVENTS_NAME.uiChange, this);
+            if (this.stamina <= 0) {
+                this.stamina = 0;
+                this.body.setMaxSpeed(this.maxSpeed);
+            }
+            this.resetStaminaTimer();
+        } else {
+            if (this.stamina != this.MAX_STAMINA && !this.restoringStamina) {
+                this.startStaminaTimer();
+            }
         }
     }
 }
