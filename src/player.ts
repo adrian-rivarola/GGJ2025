@@ -70,6 +70,7 @@ export default class Player extends GameObjects.Sprite {
                         this.body.velocity.scale(4);
 
                         this.stamina -= 30 * this.scene.game.loop.delta / 1000;
+                        this.scene.game.events.emit(EVENTS_NAME.staminaChange, this.stamina);
                         if (this.stamina <= 0) {
                             this.stamina = 0;
                             this.body.setMaxSpeed(128);
@@ -100,6 +101,7 @@ export default class Player extends GameObjects.Sprite {
             delay: 50,
             callback: () => {
                 this.stamina += staminaRegenRate;
+                this.scene.game.events.emit(EVENTS_NAME.staminaChange, this.stamina);
                 if (this.stamina >= this.MAX_STAMINA) {
                     this.stamina = this.MAX_STAMINA;
                     this.resetStaminaTimer();

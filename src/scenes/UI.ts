@@ -12,7 +12,9 @@ enum HeartFrames {
 export class UI extends Scene {
   private gameEndPhrase!: Text;
   private hearts: GameObjects.Sprite[] = [];
+  private staminaBar: GameObjects.Sprite;
   maxHearts = 3;
+  maxStamina = 100;
 
   private gameEndHandler: (status: GameStatus) => void;
 
@@ -55,6 +57,7 @@ export class UI extends Scene {
     this.initListeners();
 
     this.createHearts();
+    this.createStaminaBar();
     this.updateLife(this.maxHearts);
   }
 
@@ -78,8 +81,20 @@ export class UI extends Scene {
     }
   }
 
+  createStaminaBar() {
+    this.staminaBar = this.add.sprite(40, 80, "staminabar");
+    this.staminaBar.setScale(0.5);
+    this.staminaBar.displayWidth = this.maxStamina * 2;
+    this.staminaBar.setOrigin(0, 0);
+  }
+
+  updateStamina(stamina: number) {
+    this.staminaBar.displayWidth = stamina * 2;
+  }
+
   private initListeners(): void {
     this.game.events.on(EVENTS_NAME.hpChange, this.updateLife, this);
     this.game.events.once(EVENTS_NAME.gameEnd, this.gameEndHandler, this);
+    this.game.events.on(EVENTS_NAME.staminaChange, this.updateStamina, this);
   }
 }
