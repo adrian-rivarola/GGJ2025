@@ -80,7 +80,10 @@ export class Game extends Scene {
         const [playerOpts,] = this.map.filterObjects('player-position', (e) => e.name === 'player') ?? [];
         this.player = new Player(this, playerOpts?.x ?? 150, playerOpts?.y ?? 500);
 
-        this.physics.add.collider(this.player, this.map.getLayer('caves')!.tilemapLayer)
+        this.physics.add.collider(this.player, this.map.getLayer('caves')!.tilemapLayer, () => {
+            this.player.lastCollission = this.game.getTime()
+        });
+
         this.physics.add.overlap(this.player, this.fish, (_, fish) => {
             if (this.player.takingDamage || !(fish instanceof Fish)) {
                 return;

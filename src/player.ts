@@ -6,6 +6,7 @@ export default class Player extends GameObjects.Sprite {
 
     hearts = 3
     takingDamage = false;
+    lastCollission = -1;
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, 'character', 0);
@@ -117,12 +118,14 @@ export default class Player extends GameObjects.Sprite {
             this.body.setAccelerationY(acceleration)
         }
 
-        // TODO: Improve behavior on collisions (use acceleration for angle and direction?)
         if (this.body.acceleration.x !== 0 || this.body.acceleration.y !== 0) {
-            const dir = this.body.velocity;
+            // Check if there was a collision in the last 100 ms
+            const isColliding = time - this.lastCollission < 100;
+            const dir = isColliding ? this.body.acceleration : this.body.velocity;
+
             this.setFlipY(dir.x < 0);
             // TODO: Interpolate rotation?
-            this.rotation = dir.angle()
+            this.rotation = dir.angle();
         }
     }
 }
