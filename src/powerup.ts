@@ -52,7 +52,6 @@ export default class PowerUp extends GameObjects.Sprite {
             return;
         }
 
-
         this.applyEffect(player);
 
         if (!this.randomizing) {

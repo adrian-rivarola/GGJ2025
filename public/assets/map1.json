@@ -360,9 +360,93 @@
          "y":0
         }, 
         {
+         "color":"#87ceeb",
+         "draworder":"topdown",
+         "id":8,
+         "locked":true,
+         "name":"oxygen-positions",
+         "objects":[
+                {
+                 "height":0,
+                 "id":36,
+                 "name":"oxygen",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":274,
+                 "y":283
+                }, 
+                {
+                 "height":0,
+                 "id":37,
+                 "name":"oxygen",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":245.333333333333,
+                 "y":850.666666666667
+                }, 
+                {
+                 "height":0,
+                 "id":38,
+                 "name":"oxygen",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":782.666666666667,
+                 "y":184
+                }, 
+                {
+                 "height":0,
+                 "id":39,
+                 "name":"oxygen",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1199.15151515151,
+                 "y":182.181818181818
+                }, 
+                {
+                 "height":0,
+                 "id":40,
+                 "name":"oxygen",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1456,
+                 "y":990
+                }, 
+                {
+                 "height":0,
+                 "id":41,
+                 "name":"oxygen",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1611,
+                 "y":443
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "draworder":"topdown",
          "id":6,
-         "locked":true,
          "name":"player-position",
          "objects":[
                 {
@@ -376,6 +460,18 @@
                  "width":0,
                  "x":224,
                  "y":192
+                }, 
+                {
+                 "height":0,
+                 "id":42,
+                 "name":"Win",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2030.66666666667,
+                 "y":137.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -383,8 +479,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":8,
- "nextobjectid":36,
+ "nextlayerid":9,
+ "nextobjectid":43,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.1.1",
