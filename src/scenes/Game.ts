@@ -74,6 +74,7 @@ export class Game extends Scene {
         this.player = new Player(this, playerOpts?.x ?? 150, playerOpts?.y ?? 500);
         this.win = new Phaser.Physics.Arcade.Body(this.physics.world);
         this.win.position = new Phaser.Math.Vector2(winOpts.x, winOpts.y);
+        this.win.setSize(this.win.width, this.game.canvas.height);
 
         this.physics.add.collider(this.player, this.map.getLayer('caves')!.tilemapLayer, () => {
             this.player.lastCollision = this.game.getTime();
