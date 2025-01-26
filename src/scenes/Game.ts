@@ -8,6 +8,7 @@ export class Game extends Scene {
     player: Player;
     fish: Fish[];
     powerups: PowerUp[];
+    bgMusic: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
 
     constructor() {
         super('level-1-scene');
@@ -91,6 +92,10 @@ export class Game extends Scene {
         this.createFish();
         this.createPowerups();
         this.createPlayer();
+
+        this.bgMusic = this.sound.add('etherealUplifting');
+        this.bgMusic.loop = true;
+        this.bgMusic.play();
 
         this.cameras.main
             .setZoom(4)

@@ -139,6 +139,7 @@ export default class Player extends GameObjects.Sprite {
         this.takingDamage = true
 
         this.scene?.game.events.emit(EVENTS_NAME.hpChange, this.hearts);
+        this.scene.sound.add('hitHurt').play();
 
         this.tint = 0xFF0000;
         this.scene.time.delayedCall(100, () => this.clearTint());

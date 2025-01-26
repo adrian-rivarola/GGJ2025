@@ -15,6 +15,15 @@ export class Loading extends Scene {
     this.load.image("cave-tiles", "assets/cave.png");
     this.load.image("staminabar", "assets/energybar.png");
     this.load.tilemapTiledJSON("map", "assets/map1.json");
+
+    this.load.audio('hitHurt', 'assets/sounds/hitHurt.wav');
+    this.load.audio('bubblePop', 'assets/sounds/bubble-pop.mp3');
+    this.load.audio('coolHipHop', 'assets/sounds/cool-hip-hop-loop.mp3');
+    this.load.audio('etherealUplifting', 'assets/sounds/ethereal-uplifting-loop.mp3');
+    this.load.audio('happyRelaxing', 'assets/sounds/happy-relaxing-loop.mp3');
+    this.load.audio('ohNo', 'assets/sounds/oh-no.mp3');
+    this.load.audio('powerUp', 'assets/sounds/power-up-type-1.mp3');
+    this.load.audio('stoneEffect', 'assets/sounds/stone-effect.mp3');
   }
 
   create(): void {

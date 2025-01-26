@@ -55,6 +55,7 @@ export default class PowerUp extends GameObjects.Sprite {
         this.applyEffect(player);
 
         if (!this.randomizing) {
+            this.scene.sound.add('powerUp').play();
             this.remove();
         }
     }
