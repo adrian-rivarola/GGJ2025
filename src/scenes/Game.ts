@@ -9,17 +9,7 @@ export class Game extends Scene {
     powerups: Phaser.GameObjects.Sprite[];
 
     constructor() {
-        super('MainMenu');
-    }
-
-    preload() {
-        this.load.spritesheet('character', 'assets/character.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('fish', 'assets/fish.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('powerup', 'assets/powerup.png', { frameWidth: 32, frameHeight: 32 });
-
-        this.load.image("grass-tiles", "assets/grass.png");
-        this.load.image("cave-tiles", "assets/cave.png");
-        this.load.tilemapTiledJSON("map", "assets/map1.json");
+        super('level-1-scene');
     }
 
     createMap() {

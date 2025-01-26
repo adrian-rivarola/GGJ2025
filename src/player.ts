@@ -1,4 +1,5 @@
 import { Scene, GameObjects, Physics } from 'phaser';
+import { EVENTS_NAME, GameStatus } from './consts';
 
 export default class Player extends GameObjects.Sprite {
     declare body: Physics.Arcade.Body;
@@ -117,6 +118,8 @@ export default class Player extends GameObjects.Sprite {
         this.hearts -= 1
         this.takingDamage = true
 
+        this.scene?.game.events.emit(EVENTS_NAME.hpChange, this.hearts);
+
         this.tint = 0xFF0000;
         this.scene.time.delayedCall(100, () => this.clearTint());
 
@@ -130,8 +133,8 @@ export default class Player extends GameObjects.Sprite {
                 angle: 0,
                 duration: 500,
                 onComplete: () => {
-                    // TODO: Add death/restart screen
                     this.body.setGravityY(-80);
+                    this.scene?.game.events.emit(EVENTS_NAME.gameEnd, GameStatus.LOSE);
                 },
             });
             return;

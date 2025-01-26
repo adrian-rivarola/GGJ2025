@@ -1,4 +1,6 @@
 import { Game as GameScene } from './scenes/Game';
+import { Loading } from './scenes/Loading';
+import { UI } from './scenes/UI';
 
 import { Game, Types } from "phaser";
 
@@ -21,7 +23,9 @@ const config: Types.Core.GameConfig = {
     },
     scene: [
         // TODO: Add UI
+        Loading,
         GameScene,
+        UI,
     ]
 };
 
