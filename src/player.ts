@@ -4,6 +4,7 @@ export default class Player extends GameObjects.Sprite {
     declare body: Physics.Arcade.Body;
     cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys
 
+    hearts = 3
     takingDamage = false;
 
     constructor(scene: Scene, x: number, y: number) {
@@ -20,11 +21,19 @@ export default class Player extends GameObjects.Sprite {
         this.anims.create({
             key: 'player-swim',
             frames: this.anims.generateFrameNumbers('character', {
-                start: 6,
-                end: 11,
+                start: 0,
+                end: 5,
             }),
             repeat: -1,
             frameRate: 8,
+        });
+        this.anims.create({
+            key: 'player-die',
+            frames: this.anims.generateFrameNumbers('character', {
+                start: 6,
+                end: 11,
+            }),
+            frameRate: 6,
         });
         this.play('player-swim');
     }
@@ -45,8 +54,10 @@ export default class Player extends GameObjects.Sprite {
         this.cursorKeys = this.scene.input.keyboard!.createCursorKeys();
 
         this.cursorKeys.space.onDown = () => {
-            this.body.setMaxSpeed(256);
-            this.body.velocity.scale(4);
+            if (this.hearts > 0) {
+                this.body.setMaxSpeed(256);
+                this.body.velocity.scale(4);
+            }
         }
         this.cursorKeys.space.onUp = () => {
             this.body.setMaxSpeed(128);
@@ -54,11 +65,29 @@ export default class Player extends GameObjects.Sprite {
     }
 
     takeDamage() {
+        this.hearts -= 1
         this.takingDamage = true
 
         this.tint = 0xFF0000;
-
         this.scene.time.delayedCall(100, () => this.clearTint());
+
+        if (this.hearts <= 0) {
+            this.play('player-die');
+            this.resetFlip();
+            this.angle = 90;
+
+            this.scene.tweens.add({
+                targets: this,
+                angle: 0,
+                duration: 500,
+                onComplete: () => {
+                    // TODO: Add death/restart screen
+                    this.body.setGravityY(-80);
+                },
+            });
+            return;
+        }
+
         this.scene.time.delayedCall(1000, () => {
             this.takingDamage = false;
         });
@@ -66,10 +95,13 @@ export default class Player extends GameObjects.Sprite {
 
     preUpdate(time: number, delta: number): void {
         super.preUpdate(time, delta);
+        this.body.setAcceleration(0, 0);
+
+        if (this.hearts <= 0) {
+            return;
+        }
 
         const acceleration = 320
-
-        this.body.setAcceleration(0, 0);
 
         if (this.cursorKeys.left.isDown) {
             this.body.setAccelerationX(-acceleration);

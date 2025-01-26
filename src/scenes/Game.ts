@@ -59,7 +59,6 @@ export class Game extends Scene {
 
     createPowerups() {
         const powerupObjects = this.map.getObjectLayer('powerup-positions')?.objects ?? [];
-        console.log(powerupObjects);
         this.powerups = powerupObjects.map(e => {
             // TODO: define powerup effect
             const idx = Math.round(Math.random() * 20);
@@ -83,21 +82,11 @@ export class Game extends Scene {
 
         this.physics.add.collider(this.player, this.map.getLayer('caves')!.tilemapLayer)
         this.physics.add.overlap(this.player, this.fish, (_, fish) => {
-            if (this.player.takingDamage) {
+            if (this.player.takingDamage || !(fish instanceof Fish)) {
                 return;
             }
 
-            // TODO: Move to Fish class, follow player?
-            if (fish instanceof Fish) {
-                fish.play('fish-attack', true);
-                fish.patrolChain.pause();
-
-                const duration = fish.anims.currentAnim!.duration;
-                this.time.delayedCall(duration, () => {
-                    fish.play('fish-swim');
-                    fish.patrolChain.resume();
-                });
-            }
+            fish.attack();
             this.player.takeDamage();
         });
 

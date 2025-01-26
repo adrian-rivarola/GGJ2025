@@ -154,5 +154,17 @@ export default class Fish extends GameObjects.Sprite {
             persist: true,
         });
     }
+
+    attack() {
+        this.play('fish-attack', true);
+        this.patrolChain.pause();
+
+        const duration = this.anims.currentAnim!.duration;
+        this.scene.time.delayedCall(duration, () => {
+            this.play('fish-swim');
+            this.patrolChain.resume();
+        });
+
+    }
 }
 
