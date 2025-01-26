@@ -14,4 +14,18 @@ export class Text extends GameObjects.Text {
 
     scene.add.existing(this);
   }
+
+  static showPowerupText(scene: Scene, x: number, y: number, text: string) {
+    const txt = scene.add.text(x, y, text, { fontSize: 12 }).setOrigin(0.5).setSize(12, 12).setScale(0.5);
+
+    scene.tweens.add({
+      targets: txt,
+      y: '-=30',
+      duration: 1000,
+      alpha: 0,
+      onComplete: () => txt.destroy(),
+    });
+
+    return txt;
+  }
 }

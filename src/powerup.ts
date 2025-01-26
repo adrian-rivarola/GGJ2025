@@ -1,6 +1,7 @@
 import { GameObjects, Scene } from "phaser";
 import Player from "./player";
 import { EVENTS_NAME } from "./consts";
+import { Text } from "./classes/text";
 
 // Map effect names to frame index in spritesheet
 export const EFFECTS = [
@@ -95,6 +96,7 @@ export default class PowerUp extends GameObjects.Sprite {
         const effectMap: Record<string, Function> = {
             'oxygen': () => {
                 player.oxygen++;
+                Text.showPowerupText(this.scene, player.x, player.y, '+1 oxygen');
             },
             'random': () => {
                 this.randomizing = true;
@@ -133,30 +135,38 @@ export default class PowerUp extends GameObjects.Sprite {
             },
             'health': () => {
                 player.hearts++;
+                Text.showPowerupText(this.scene, player.x, player.y, '+1 heart');
             },
             'stamina': () => {
-                player.stamina = Math.min(player.stamina + player.MAX_STAMINA, player.MAX_STAMINA);
+                player.MAX_STAMINA += 20;
+                player.stamina = player.MAX_STAMINA;
+                Text.showPowerupText(this.scene, player.x, player.y, 'Stamina improved!');
+
             },
             'shield': () => {
                 player.hasShield = true;
                 player.shield.setVisible(true);
                 player.shield.setPosition(player.x, player.y);
+                Text.showPowerupText(this.scene, player.x, player.y, 'Shield acquired!');
             },
             'speed': () => {
                 player.maxSpeed += 16;
                 player.maxDivingSpeed += 24;
+                Text.showPowerupText(this.scene, player.x, player.y, 'Speed improved!');
             },
             'size': () => {
-                const ogScale = player.scale;
                 player.setScale(player.scale * 1.5);
+                Text.showPowerupText(this.scene, player.x, player.y, '${powerupMsg}');
                 this.scene.time.delayedCall(this.effectDuration, () => {
-                    player.setScale(ogScale);
+                    player.setScale(player.scale / 1.5);
                 });
             },
             'pull-down': () => {
                 player.body.setGravityY(250);
+                Text.showPowerupText(this.scene, player.x, player.y, 'Gravity augmented!');
                 this.scene.time.delayedCall(this.effectDuration, () => {
                     player.body.setGravityY(0);
+                    Text.showPowerupText(this.scene, player.x, player.y, 'Gravity restored!');
                 });
             },
         };

@@ -110,11 +110,11 @@ export default class Player extends GameObjects.Sprite {
             delay: 50,
             callback: () => {
                 this.stamina += staminaRegenRate;
-                this.scene.game.events.emit(EVENTS_NAME.uiChange, this);
                 if (this.stamina >= this.MAX_STAMINA) {
                     this.stamina = this.MAX_STAMINA;
                     this.resetStaminaTimer();
                 }
+                this.scene.game.events.emit(EVENTS_NAME.uiChange, this);
             },
             callbackScope: this,
             loop: true,
@@ -236,10 +236,9 @@ export default class Player extends GameObjects.Sprite {
                 this.body.setMaxSpeed(this.maxSpeed);
             }
             this.resetStaminaTimer();
-        } else {
-            if (this.stamina != this.MAX_STAMINA && !this.restoringStamina) {
-                this.startStaminaTimer();
-            }
+        } else if (this.stamina != this.MAX_STAMINA && !this.restoringStamina) {
+            this.startStaminaTimer();
+
         }
     }
 }
