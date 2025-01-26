@@ -97,6 +97,7 @@ export class Game extends Scene {
 
         this.physics.add.overlap(this.player, this.win, (_) => {
             this.game.events.emit(EVENTS_NAME.gameEnd, GameStatus.WIN)
+            this.player.destroy();
         });
     }
 
