@@ -54,6 +54,9 @@ export class Game extends Scene {
         const powerupObjects = this.map.getObjectLayer('powerup-positions')?.objects ?? [];
         this.powerups = powerupObjects.map(e => new PowerUp(this, e.x!, e.y! - 16, 'random'));
 
+        const oxygenObjects = this.map.getObjectLayer('oxygen-positions')?.objects ?? [];
+        this.powerups = this.powerups.concat(...oxygenObjects.map(e => PowerUp.createOxygen(this, e.x!, e.y! - 16)))
+
         this.physics.world.enable(this.powerups);
         this.tweens.add({
             targets: this.powerups,

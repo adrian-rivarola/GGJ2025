@@ -375,8 +375,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":274,
-                 "y":283
+                 "x":272,
+                 "y":288
                 }, 
                 {
                  "height":0,
@@ -387,8 +387,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":245.333333333333,
-                 "y":850.666666666667
+                 "x":240,
+                 "y":864
                 }, 
                 {
                  "height":0,
@@ -399,8 +399,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":782.666666666667,
-                 "y":184
+                 "x":784,
+                 "y":192.002777777778
                 }, 
                 {
                  "height":0,
@@ -411,8 +411,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":1199.15151515151,
-                 "y":182.181818181818
+                 "x":1200,
+                 "y":192
                 }, 
                 {
                  "height":0,
@@ -424,7 +424,7 @@
                  "visible":true,
                  "width":0,
                  "x":1456,
-                 "y":990
+                 "y":992
                 }, 
                 {
                  "height":0,
@@ -435,8 +435,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":1611,
-                 "y":443
+                 "x":1616,
+                 "y":448
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -447,6 +447,7 @@
         {
          "draworder":"topdown",
          "id":6,
+         "locked":true,
          "name":"player-position",
          "objects":[
                 {
@@ -470,8 +471,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":2030.66666666667,
-                 "y":137.333333333333
+                 "x":2016.00011837121,
+                 "y":127.999171401515
                 }],
          "opacity":1,
          "type":"objectgroup",

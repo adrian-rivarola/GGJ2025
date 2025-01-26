@@ -35,6 +35,14 @@ export default class PowerUp extends GameObjects.Sprite {
         this.setEffect(effect);
     }
 
+    static createOxygen(scene: Scene, x: number, y: number) {
+        const p = new PowerUp(scene, x, y, 'oxygen');
+        p.iconFrame.destroy();
+
+        p.setTexture('bubble');
+        return p;
+    }
+
     createAnimation() {
         this.anims.create({
             key: 'random',
